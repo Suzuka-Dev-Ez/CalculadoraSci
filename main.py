@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk, messagebox
 import numpy as np
@@ -11,17 +10,15 @@ class CalculadoraGrafica:
     def __init__(self, root):
         self.root = root
 
-        # -----------------------------
-        # Configuración de la ventana
-        # -----------------------------
+        # Configuración
         self.root.title("Calculadora Científica y Graficadora")
         self.root.geometry("1100x650")
         self.root.minsize(900, 550)
 
-        # Resultado anterior
+        # Estado
         self.ans = 0
 
-        # Configuración del grid principal
+        # Grid
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=2)
         self.root.rowconfigure(0, weight=1)
@@ -29,10 +26,7 @@ class CalculadoraGrafica:
         self._crear_panel_calculadora()
         self._crear_panel_grafico()
 
-    # ==========================================================
-    # PANEL DE CALCULADORA
-    # ==========================================================
-
+    # Panel
     def _crear_panel_calculadora(self):
         frame_calc = ttk.LabelFrame(
             self.root,
@@ -48,9 +42,7 @@ class CalculadoraGrafica:
             pady=10
         )
 
-        # -----------------------------
         # Pantalla
-        # -----------------------------
         self.expresion_var = tk.StringVar()
 
         pantalla = ttk.Entry(
@@ -69,12 +61,9 @@ class CalculadoraGrafica:
             pady=(0, 10)
         )
 
-        # Permitir usar el teclado
         pantalla.focus()
 
-        # -----------------------------
         # Botones
-        # -----------------------------
         botones = [
             ("C", 1, 0),
             ("⌫", 1, 1),
@@ -119,14 +108,14 @@ class CalculadoraGrafica:
             ("x", 7, 4),
         ]
 
-        # Configuración de filas y columnas
+        # Layout
         for columna in range(5):
             frame_calc.columnconfigure(columna, weight=1)
 
         for fila in range(8):
             frame_calc.rowconfigure(fila, weight=1)
 
-        # Crear botones
+        # Interfaz
         for texto, fila, columna in botones:
 
             boton = ttk.Button(
@@ -143,92 +132,66 @@ class CalculadoraGrafica:
                 pady=2
             )
 
-    # ==========================================================
-    # BOTONES DE LA CALCULADORA
-    # ==========================================================
-
+    # Eventos
     def _al_pulsar_boton(self, texto):
 
         expresion = self.expresion_var.get()
 
-        # -----------------------------
         # Limpiar
-        # -----------------------------
         if texto == "C":
             self.expresion_var.set("")
 
-        # -----------------------------
-        # Borrar último carácter
-        # -----------------------------
+        # Borrar
         elif texto == "⌫":
             self.expresion_var.set(expresion[:-1])
 
-        # -----------------------------
-        # Igual
-        # -----------------------------
+        # Evaluar
         elif texto == "=":
             self._evaluar_expresion()
 
-        # -----------------------------
         # Funciones
-        # -----------------------------
         elif texto in ("sin", "cos", "tan", "sqrt", "log", "ln", "exp"):
             self.expresion_var.set(
                 expresion + f"{texto}("
             )
 
-        # -----------------------------
         # Potencia
-        # -----------------------------
         elif texto == "^":
             self.expresion_var.set(
                 expresion + "**"
             )
 
-        # -----------------------------
         # Cuadrado
-        # -----------------------------
         elif texto == "x²":
             self.expresion_var.set(
                 f"({expresion})**2"
             )
 
-        # -----------------------------
         # Inverso
-        # -----------------------------
         elif texto == "1/x":
             self.expresion_var.set(
                 f"1/({expresion})"
             )
 
-        # -----------------------------
         # Porcentaje
-        # -----------------------------
         elif texto == "%":
             self.expresion_var.set(
                 expresion + "/100"
             )
 
-        # -----------------------------
-        # Resultado anterior
-        # -----------------------------
+        # Memoria
         elif texto == "Ans":
             self.expresion_var.set(
                 expresion + "ans"
             )
 
-        # -----------------------------
-        # Resto de botones
-        # -----------------------------
+        # Entrada
         else:
             self.expresion_var.set(
                 expresion + texto
             )
 
-    # ==========================================================
-    # EVALUAR EXPRESIÓN
-    # ==========================================================
-
+    # Lógica
     def _evaluar_expresion(self):
 
         expr = self.expresion_var.get()
@@ -257,7 +220,6 @@ class CalculadoraGrafica:
                 contexto
             )
 
-            # Evitar resultados extraños
             if isinstance(resultado, (int, float)):
 
                 if not math.isfinite(resultado):
@@ -285,10 +247,7 @@ class CalculadoraGrafica:
                 "La expresión matemática no es válida."
             )
 
-    # ==========================================================
-    # PANEL DE GRÁFICOS
-    # ==========================================================
-
+    # Gráfica
     def _crear_panel_grafico(self):
 
         frame_grafico = ttk.LabelFrame(
@@ -308,10 +267,7 @@ class CalculadoraGrafica:
         frame_grafico.columnconfigure(0, weight=1)
         frame_grafico.rowconfigure(1, weight=1)
 
-        # -----------------------------
         # Controles
-        # -----------------------------
-
         frame_controles = ttk.Frame(frame_grafico)
 
         frame_controles.grid(
@@ -349,7 +305,6 @@ class CalculadoraGrafica:
             "sin(x)"
         )
 
-        # Botón graficar
         ttk.Button(
             frame_controles,
             text="Graficar",
@@ -360,10 +315,7 @@ class CalculadoraGrafica:
             padx=5
         )
 
-        # -----------------------------
-        # Rango X
-        # -----------------------------
-
+        # Rango
         ttk.Label(
             frame_controles,
             text="X min:"
@@ -417,10 +369,7 @@ class CalculadoraGrafica:
             "10"
         )
 
-        # -----------------------------
         # Matplotlib
-        # -----------------------------
-
         self.fig, self.ax = plt.subplots(
             figsize=(6, 5),
             dpi=100
@@ -437,13 +386,9 @@ class CalculadoraGrafica:
             sticky="nsew"
         )
 
-        # Graficar función inicial
         self.graficar()
 
-    # ==========================================================
-    # GRAFICAR
-    # ==========================================================
-
+    # Plot
     def graficar(self):
 
         expr = self.entry_fx.get().strip()
@@ -456,35 +401,15 @@ class CalculadoraGrafica:
             return
 
         try:
-
-            # Obtener rango
-            xmin = float(
-                self.entry_xmin.get()
-            )
-
-            xmax = float(
-                self.entry_xmax.get()
-            )
+            xmin = float(self.entry_xmin.get())
+            xmax = float(self.entry_xmax.get())
 
             if xmin >= xmax:
-                raise ValueError(
-                    "X min debe ser menor que X max."
-                )
+                raise ValueError("X min debe ser menor que X max.")
 
-            # Crear valores X
-            x = np.linspace(
-                xmin,
-                xmax,
-                2000
-            )
+            x = np.linspace(xmin, xmax, 2000)
+            expr_np = expr.replace("^", "**")
 
-            # Reemplazar ^ por **
-            expr_np = expr.replace(
-                "^",
-                "**"
-            )
-
-            # Funciones permitidas
             contexto = {
                 "x": x,
                 "sin": np.sin,
@@ -499,35 +424,21 @@ class CalculadoraGrafica:
                 "abs": np.abs
             }
 
-            # Evaluar función
             y = eval(
                 expr_np,
                 {"__builtins__": None},
                 contexto
             )
 
-            # -----------------------------
-            # Limpiar gráfico
-            # -----------------------------
-
+            # Limpieza
             self.ax.clear()
 
-            # -----------------------------
-            # Evitar líneas gigantes
-            # en discontinuidades
-            # -----------------------------
-
+            # Ajustes
             y = np.asarray(y, dtype=float)
-
             y[~np.isfinite(y)] = np.nan
-
-            # Valores demasiado grandes
             y[np.abs(y) > 1e4] = np.nan
 
-            # -----------------------------
             # Dibujar
-            # -----------------------------
-
             self.ax.plot(
                 x,
                 y,
@@ -535,70 +446,32 @@ class CalculadoraGrafica:
                 linewidth=2
             )
 
-            # Eje X
-            self.ax.axhline(
-                0,
-                linewidth=0.8,
-                linestyle="--"
-            )
-
-            # Eje Y
-            self.ax.axvline(
-                0,
-                linewidth=0.8,
-                linestyle="--"
-            )
-
-            # Grid
-            self.ax.grid(
-                True,
-                linestyle=":",
-                alpha=0.6
-            )
-
-            # Título
-            self.ax.set_title(
-                "Gráfico de la función"
-            )
-
-            # Etiquetas
+            self.ax.axhline(0, linewidth=0.8, linestyle="--")
+            self.ax.axvline(0, linewidth=0.8, linestyle="--")
+            self.ax.grid(True, linestyle=":", alpha=0.6)
+            self.ax.set_title("Gráfico de la función")
             self.ax.set_xlabel("x")
             self.ax.set_ylabel("f(x)")
+            self.ax.legend(loc="upper right")
 
-            # Leyenda
-            self.ax.legend(
-                loc="upper right"
-            )
-
-            # Ajustar
             self.fig.tight_layout()
-
-            # Actualizar
             self.canvas.draw()
 
         except ValueError as error:
-
             messagebox.showerror(
                 "Error",
                 str(error)
             )
 
         except Exception as error:
-
             messagebox.showerror(
                 "Error al graficar",
                 f"No se pudo evaluar la función.\n\n{error}"
             )
 
 
-# ==============================================================
-# PROGRAMA PRINCIPAL
-# ==============================================================
-
+# Inicio
 if __name__ == "__main__":
-
     root = tk.Tk()
-
     app = CalculadoraGrafica(root)
-
     root.mainloop()
